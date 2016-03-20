@@ -1,0 +1,357 @@
+
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>SSE</title>
+
+		<link rel="stylesheet" href = "css/bootstrap.css">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>SSE</h1>
+					<h3>le Streaming Simple et Efficace, sans WebSocket</h3>
+				</section>
+
+<!--
+				les differentes strategies de streaming
+				  websocket
+				  long polling
+				  sse
+
+				sse en detail
+				  trame http header
+				  data et event
+
+				l api client en javascript
+
+				les reconnections
+				  comme du long polling
+				  sauf que tout est fait par le browser
+
+				support des browsers
+				  TODO tester le polyfil IE
+
+				limitations
+				  mono directionnel
+				  pas de binaire
+				  pas de détection auto de perte de connectio cote serveur
+				  pas de surcharge de header cote js
+
+				implem en java
+				 pas de jsr mais on a l embarras du choix
+
+				exemple d implem
+				  web-logback
+				  turbine
+-->
+
+<section>
+	<h1>MYSELF</h1>
+	<p style="text-align: left;">
+		Alexandre Victoor<br/>
+		Architecte à la SGCIB<br/>
+		alexvictoor@gmail.com<br/>
+		https://github.com/alexvictoor<br/>
+		@alex_victoor
+	</p>
+
+</section>
+
+<section>
+	<h1>websocket</h1>
+	<p>pourquoi pas ?</p>
+	<aside class="notes">
+		websocket ?
+  pourquoi - bi directionnel, jsr356, websocket pas du HTTP et ça ça complique les choses
+  pour la plupart des besoins il y a  une solution plus simple - et donc potentiellement plus robuste en prod
+	SSE ou EventSource
+	</aside>
+</section>
+
+<section>
+	<h1>long polling</h1>
+	<img src="polling.png" style="border: 0px" />
+	<aside class="notes">
+		le streaming à l'ancienne
+	</aside>
+</section>
+
+<section>
+	<h1>websocket</h1>
+	<img src="websocket.png" style="border: 0px" />
+	<aside class="notes">
+		standardisé avec HTML5 - handshake en HTTP et ensuite protocol au dessus de TCP
+	</aside>
+</section>
+
+<section>
+	<h1>Server Sent Event</h1>
+	<img src="sse.png" style="border: 0px" />
+	<aside class="notes">
+		standardisé aussi avec HTML5 - repose entièrement sur HTTP, la grosse difference avec le
+		long polling c'est que là l'essentiel du travail est fait par le navigateur
+	</aside>
+</section>
+
+<section>
+	<h1>dans le détail</h1>
+	<pre>
+		<code data-trim>
+GET /mystream HTTP/1.1
+Host: localhost
+Accept: text/event-stream
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>dans le détail</h1>
+	<pre>
+		<code data-trim>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>dans le détail</h1>
+	<pre>
+		<code data-trim>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+
+data: coucou
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>dans le détail</h1>
+	<pre>
+		<code data-trim>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+
+data: coucou
+
+data: {"msg": "en json aussi"}
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>dans le détail</h1>
+	<pre>
+		<code data-trim>
+data: sur plusieurs
+data: lignes
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>dans le détail</h1>
+	<pre>
+		<code data-trim>
+id: 123
+event: DealDone
+data: avec un type 'DealDone'
+data: et un id 123
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section>
+	<h1>En JS ?</h1>
+	<pre>
+		<code data-trim>
+			todo code eventsource
+		</code>
+	</pre>
+	<aside class="notes">
+		Une api similaire à ce que l'on en websocket
+	</aside>
+</section>
+
+<section>
+	<h1>reconnect?</h1>
+	<pre>
+		<code data-trim>
+			id + last event id
+		</code>
+	</pre>
+	<aside class="notes">
+		tout est fait dans le navigateur
+	</aside>
+</section>
+
+<section>
+	<h1>Support chrome</h1>
+	<p>todo screenshot</p>
+	<aside class="notes">
+		très bon support -on peut visualiser les événements qui arrivent
+	</aside>
+</section>
+
+<section>
+	<h1>Support firefox</h1>
+	<p>todo screenshot</p>
+	<aside class="notes">
+		idem avec firefox
+	</aside>
+</section>
+
+<section>
+	<h1>Support firefox</h1>
+	<p>todo logo IE</p>
+	<aside class="notes">
+		Ca marche pas - heureusement des polyfills.
+	</aside>
+</section>
+
+<section>
+	<h1>Des limitations ?</h1>
+	<p></p>
+	<aside class="notes">
+		mono directionnel
+		pas de binaire
+		pas de détection auto de perte de connectio cote serveur
+		pas de surcharge de header cote js
+	</aside>
+</section>
+
+<section>
+	<h1>Implems en Java</h1>
+	<ul>
+		<li>Jetty</li>
+		<li>Spring</li>
+		<li>Undertow</li>
+		<li>Jersey</li>
+		<li>RxNetty</li>
+		<li>...</li>
+	</ul>
+	<aside class="notes">
+		pas de jsr mais un paquet d'outils
+	</aside>
+</section>
+
+<section>
+	<h1>WEB logback</h1>
+	<pre>
+		<code data-trim>
+			todo conf
+		</code>
+	</pre>
+	<aside class="notes">
+		un exemple d'utilidation pour finir
+	</aside>
+</section>
+
+<section>
+	<h1>WEB logback</h1>
+	<pre>
+		<code data-trim>
+			todo screenshot
+		</code>
+	</pre>
+	<aside class="notes">
+		un exemple d'utilidation pour finir
+	</aside>
+</section>
+
+
+
+
+
+
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+
+	</body>
+</html>
