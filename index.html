@@ -160,7 +160,7 @@ Connection: keep-alive
 Content-Type: text/event-stream
 Transfer-Encoding: chunked
 
-data: coucou
+data: du txt ou n'importe quoi
 		</code>
 	</pre>
 	<aside class="notes">
@@ -177,7 +177,7 @@ Connection: keep-alive
 Content-Type: text/event-stream
 Transfer-Encoding: chunked
 
-data: coucou
+data: du txt ou n'importe quoi
 
 data: {"msg": "en json aussi"}
 		</code>
@@ -205,9 +205,9 @@ data: lignes
 	<pre>
 		<code data-trim>
 id: 123
-event: DealDone
-data: avec un type 'DealDone'
-data: et un id 123
+event: TaskCompleted
+data: avec un id (123)
+data: et un type (TaskCompleted)
 		</code>
 	</pre>
 	<aside class="notes">
@@ -215,11 +215,29 @@ data: et un id 123
 	</aside>
 </section>
 
-<section>
+<section data-transition="fade">
 	<h1>En JS ?</h1>
 	<pre>
 		<code data-trim>
-			todo code eventsource
+var source = new EventSource("http://localhost:8081/stream");
+source.onmessage = function(event) {
+    // console.log(event.data);
+};
+		</code>
+	</pre>
+	<aside class="notes">
+		Une api similaire à ce que l'on en websocket
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>En JS ?</h1>
+	<pre>
+		<code data-trim>
+var source = new EventSource("http://localhost:8081/stream");
+source.addEventListener("TaskCompleted", function (event) {
+    // console.error(event.data);
+});
 		</code>
 	</pre>
 	<aside class="notes">
@@ -228,10 +246,21 @@ data: et un id 123
 </section>
 
 <section>
-	<h1>reconnect?</h1>
+	<h1>reconnections?</h1>
+	<aside class="notes">
+		le navigateur essaye de se reconnecter tout seul
+	</aside>
+</section>
+
+
+<section>
+	<h1>Last ID</h1>
 	<pre>
 		<code data-trim>
-			id + last event id
+GET /mystream HTTP/1.1
+Host: localhost
+Accept: text/event-stream
+Last-Event-ID: 123
 		</code>
 	</pre>
 	<aside class="notes">
@@ -239,25 +268,39 @@ data: et un id 123
 	</aside>
 </section>
 
+<section data-transition="fade">
+	<h1>retry delay</h1>
+	<pre>
+		<code data-trim>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+
+retry: 5000
+
+data: { ... }
+		</code>
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+
 <section>
-	<h1>Support chrome</h1>
-	<p>todo screenshot</p>
+	<h1>Browsers</h1>
+	<img src="chrome.png" style="border: 0px" />
+
 	<aside class="notes">
 		très bon support -on peut visualiser les événements qui arrivent
 	</aside>
 </section>
 
 <section>
-	<h1>Support firefox</h1>
-	<p>todo screenshot</p>
-	<aside class="notes">
-		idem avec firefox
-	</aside>
-</section>
+	<h1>Browsers</h1>
+	<img src="no-ie1.png" style="border: 0px" />
 
-<section>
-	<h1>Support firefox</h1>
-	<p>todo logo IE</p>
 	<aside class="notes">
 		Ca marche pas - heureusement des polyfills.
 	</aside>
@@ -303,11 +346,7 @@ data: et un id 123
 
 <section>
 	<h1>WEB logback</h1>
-	<pre>
-		<code data-trim>
-			todo screenshot
-		</code>
-	</pre>
+	<img src="screenshot.png" style="border: 0px" />
 	<aside class="notes">
 		un exemple d'utilidation pour finir
 	</aside>
