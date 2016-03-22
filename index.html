@@ -88,7 +88,7 @@
 
 <section>
 	<h1>websocket</h1>
-	<p>pourquoi pas ?</p>
+	<p>ça marche non ?</p>
 	<aside class="notes">
 		websocket ?
   pourquoi - bi directionnel, jsr356, websocket pas du HTTP et ça ça complique les choses
@@ -123,7 +123,7 @@
 </section>
 
 <section>
-	<h1>dans le détail</h1>
+	<h1>request</h1>
 	<pre>
 		<code data-trim>
 GET /mystream HTTP/1.1
@@ -137,14 +137,51 @@ Accept: text/event-stream
 </section>
 
 <section data-transition="fade">
-	<h1>dans le détail</h1>
+	<h1>response</h1>
 	<pre>
-		<code data-trim>
 HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Type: text/event-stream
 Transfer-Encoding: chunked
-		</code>
+		</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>response</h1>
+	<pre>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+
+data: un premier événement, du txt ou n'importe quoi
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+
+<section data-transition="fade">
+	<h1>response</h1>
+	<pre>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+
+data: un premier événement, du txt ou n'importe quoi
+
+data: un deuxième
+&nbsp;
+&nbsp;
 	</pre>
 	<aside class="notes">
 
@@ -152,48 +189,33 @@ Transfer-Encoding: chunked
 </section>
 
 <section data-transition="fade">
-	<h1>dans le détail</h1>
+	<h1>response</h1>
 	<pre>
-		<code data-trim>
 HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Type: text/event-stream
 Transfer-Encoding: chunked
 
-data: du txt ou n'importe quoi
-		</code>
+data: un premier événement, du txt ou n'importe quoi
+
+data: un deuxième
+
+data: {"msg": "un troisieme en json"}
 	</pre>
 	<aside class="notes">
 
 	</aside>
 </section>
 
-<section data-transition="fade">
-	<h1>dans le détail</h1>
-	<pre>
-		<code data-trim>
-HTTP/1.1 200 OK
-Connection: keep-alive
-Content-Type: text/event-stream
-Transfer-Encoding: chunked
-
-data: du txt ou n'importe quoi
-
-data: {"msg": "en json aussi"}
-		</code>
-	</pre>
-	<aside class="notes">
-
-	</aside>
-</section>
 
 <section data-transition="fade">
-	<h1>dans le détail</h1>
+	<h1>response</h1>
 	<pre>
-		<code data-trim>
-data: sur plusieurs
+data: sur une seule ligne
+
+data: sur 
+data: plusieurs
 data: lignes
-		</code>
 	</pre>
 	<aside class="notes">
 
@@ -201,7 +223,7 @@ data: lignes
 </section>
 
 <section data-transition="fade">
-	<h1>dans le détail</h1>
+	<h1>metadata</h1>
 	<pre>
 		<code data-trim>
 id: 123
@@ -246,22 +268,46 @@ source.addEventListener("TaskCompleted", function (event) {
 </section>
 
 <section>
-	<h1>reconnections?</h1>
+	<img src="http://ingenioustravel.com/wp-content/uploads/2012/08/Unplugged.jpg" style="border: 0px" />
+
 	<aside class="notes">
 		le navigateur essaye de se reconnecter tout seul
 	</aside>
 </section>
 
 
-<section>
-	<h1>Last ID</h1>
+<section data-transition="fade">
+	<h1>Recovery</h1>
 	<pre>
-		<code data-trim>
+
+id: 123
+data: dernier événement reçu
+
+===== coupure ===== 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+	</pre>
+	<aside class="notes">
+		tout est fait dans le navigateur
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>Recovery</h1>
+	<pre>
+
+id: 123
+data: dernier événement reçu
+
+===== coupure ===== 
+
 GET /mystream HTTP/1.1
 Host: localhost
 Accept: text/event-stream
 Last-Event-ID: 123
-		</code>
 	</pre>
 	<aside class="notes">
 		tout est fait dans le navigateur
@@ -271,7 +317,6 @@ Last-Event-ID: 123
 <section data-transition="fade">
 	<h1>retry delay</h1>
 	<pre>
-		<code data-trim>
 HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Type: text/event-stream
@@ -280,7 +325,6 @@ Transfer-Encoding: chunked
 retry: 5000
 
 data: { ... }
-		</code>
 	</pre>
 	<aside class="notes">
 
@@ -333,10 +377,39 @@ data: { ... }
 </section>
 
 <section>
+	<h1>Jersey</h1>
+	<pre>
+		<code>
+@GET
+@Produces(SseFeature.SERVER_SENT_EVENTS)
+public EventOutput getMyStream() {
+  EventOutput eventOutput = new EventOutput();
+  // ...
+  return eventOutput
+}
+
+
+eventOutput.write(event);
+
+		</code>
+	</pre>
+
+</section>
+
+<section>
 	<h1>WEB logback</h1>
 	<pre>
 		<code data-trim>
-			todo conf
+<configuration>
+...
+  <appender name="WEBOUT" class="com...BrowserConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss} %-5level %logger{36} - %msg%n</pattern> 
+    </encoder>
+    <port>8765</port>
+  </appender>
+...
+</configuration>
 		</code>
 	</pre>
 	<aside class="notes">
@@ -352,6 +425,10 @@ data: { ... }
 	</aside>
 </section>
 
+
+<section>
+	<h1>QUESTIONS</h1>
+</section>
 
 
 
