@@ -87,7 +87,6 @@
 </section>
 
 <section>
-	<h1>websocket?</h1>
 	<img src="html5.png" style="border: 0px" />
 	<aside class="notes">
 		websocket ?
@@ -125,11 +124,9 @@
 <section>
 	<h1>request</h1>
 	<pre>
-		<code data-trim>
 GET /mystream HTTP/1.1
 Host: localhost
 Accept: text/event-stream
-		</code>
 	</pre>
 	<aside class="notes">
 
@@ -143,6 +140,15 @@ HTTP/1.1 200 OK
 Connection: keep-alive
 Content-Type: text/event-stream
 Transfer-Encoding: chunked
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 		</pre>
 	<aside class="notes">
 
@@ -162,6 +168,9 @@ data: un premier événement, du txt ou n'importe quoi
 &nbsp;
 &nbsp;
 &nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 	</pre>
 	<aside class="notes">
 
@@ -180,42 +189,11 @@ Transfer-Encoding: chunked
 data: un premier événement, du txt ou n'importe quoi
 
 data: un deuxième
-&nbsp;
-&nbsp;
-	</pre>
-	<aside class="notes">
-
-	</aside>
-</section>
-
-<section data-transition="fade">
-	<h1>response</h1>
-	<pre>
-HTTP/1.1 200 OK
-Connection: keep-alive
-Content-Type: text/event-stream
-Transfer-Encoding: chunked
-
-data: un premier événement, du txt ou n'importe quoi
-
-data: un deuxième
-
-data: {"msg": "un troisieme en json"}
-	</pre>
-	<aside class="notes">
-
-	</aside>
-</section>
-
-
-<section data-transition="fade">
-	<h1>response</h1>
-	<pre>
-data: sur une seule ligne
-
-data: sur 
+data: sur
 data: plusieurs
 data: lignes
+&nbsp;
+&nbsp;
 	</pre>
 	<aside class="notes">
 
@@ -223,14 +201,21 @@ data: lignes
 </section>
 
 <section data-transition="fade">
-	<h1>metadata</h1>
+	<h1>response</h1>
 	<pre>
-		<code data-trim>
-id: 123
-event: TaskCompleted
-data: avec un id (123)
-data: et un type (TaskCompleted)
-		</code>
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Type: text/event-stream
+Transfer-Encoding: chunked
+
+data: un premier événement, du txt ou n'importe quoi
+
+data: un deuxième
+data: sur
+data: plusieurs
+data: lignes
+
+data: {"msg": "un troisieme en json"}
 	</pre>
 	<aside class="notes">
 
@@ -252,8 +237,22 @@ source.onmessage = function(event) {
 	</aside>
 </section>
 
+
 <section data-transition="fade">
-	<h1>En JS ?</h1>
+	<h1>metadata</h1>
+	<pre>
+id: 123
+event: TaskCompleted
+data: avec un id (123)
+data: et un type (TaskCompleted)
+	</pre>
+	<aside class="notes">
+
+	</aside>
+</section>
+
+<section data-transition="fade">
+	<h1>et en JS...</h1>
 	<pre>
 		<code data-trim>
 var source = new EventSource("http://localhost:8081/stream");
@@ -268,7 +267,7 @@ source.addEventListener("TaskCompleted", function (event) {
 </section>
 
 <section>
-	<img src="http://ingenioustravel.com/wp-content/uploads/2012/08/Unplugged.jpg" style="border: 0px" />
+	<img src="Unplugged.jpg" style="border: 0px" />
 
 	<aside class="notes">
 		le navigateur essaye de se reconnecter tout seul
@@ -283,7 +282,7 @@ source.addEventListener("TaskCompleted", function (event) {
 id: 123
 data: dernier événement reçu
 
-===== coupure ===== 
+===== coupure =====
 &nbsp;
 &nbsp;
 &nbsp;
@@ -302,7 +301,7 @@ data: dernier événement reçu
 id: 123
 data: dernier événement reçu
 
-===== coupure ===== 
+===== coupure =====
 
 GET /mystream HTTP/1.1
 Host: localhost
@@ -342,22 +341,11 @@ data: { ... }
 </section>
 
 <section>
-	<h1>Browsers</h1>
-	<img src="no-ie1.png" style="border: 0px" />
+	<h1>... et "browsers"</h1>
+	<img src="internetExplorer.jpg" style="border: 0px" />
 
 	<aside class="notes">
 		Ca marche pas - heureusement des polyfills.
-	</aside>
-</section>
-
-<section>
-	<h1>Des limitations ?</h1>
-	<p></p>
-	<aside class="notes">
-		mono directionnel
-		pas de binaire
-		pas de détection auto de perte de connectio cote serveur
-		pas de surcharge de header cote js
 	</aside>
 </section>
 
@@ -397,23 +385,13 @@ eventOutput.write(event);
 </section>
 
 <section>
-	<h1>WEB logback</h1>
-	<pre>
-		<code data-trim>
-<configuration>
-...
-  <appender name="WEBOUT" class="com...BrowserConsoleAppender">
-    <encoder>
-      <pattern>%d{HH:mm:ss} %-5level %logger{36} - %msg%n</pattern> 
-    </encoder>
-    <port>8765</port>
-  </appender>
-...
-</configuration>
-		</code>
-	</pre>
+	<h1>Des limitations ?</h1>
+	<p></p>
 	<aside class="notes">
-		un exemple d'utilidation pour finir
+		mono directionnel
+		pas de binaire
+		pas de détection auto de perte de connectio cote serveur
+		pas de surcharge de header cote js
 	</aside>
 </section>
 
